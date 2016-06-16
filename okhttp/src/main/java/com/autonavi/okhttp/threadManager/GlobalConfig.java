@@ -1,0 +1,1 @@
+package com.autonavi.okhttp.threadManager;/** * Created by xiaopo.hxp on 2016/1/10. */public class GlobalConfig {    // Global control on debug log    public static boolean DEBUG_LOG = true;}

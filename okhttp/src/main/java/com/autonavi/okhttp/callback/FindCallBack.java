@@ -1,0 +1,1 @@
+package com.autonavi.okhttp.callback;import com.squareup.okhttp.Response;/** * Created by lj88868 on 2016/1/12. */public abstract class FindCallBack {    public abstract void done(String tag,String result,Exception e);}
