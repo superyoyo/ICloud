@@ -25,7 +25,7 @@ public class FindFormat {
                     keys.add(0, "*");
                 }
             }
-            params.put("keys", keys);
+            params.put("keys", new Gson().toJson(keys));
         }
         if(limit != -1){
             params.put("limit", limit);

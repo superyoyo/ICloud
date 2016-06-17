@@ -64,8 +64,8 @@ public class MainActivity extends Activity {
         //query.whereNearsheWithInKilometers("lat", "lng", new IPoint(39.992706, 116.396574), 3);
         query.whereNear("lat", "lng", new IPoint(39.992706, 116.396574));
         List<String> keys = new ArrayList<>();
-        /*keys.add("station_name");
-        keys.add("station_id");*/
+        keys.add("name");
+        keys.add("age");
         query.setKeys(keys);
         query.findInBackGround(findCallBack);
     }
@@ -129,7 +129,7 @@ public class MainActivity extends Activity {
                 if(exception != null){
                     exception.printStackTrace();
                 }else{
-                    Log.i("liuji","MainActivity --> getDone--> list:" + list);
+                    Log.i("liuji","MainActivity --> findDone--> list:" + list);
                     for(IObject obj : list){
                         Log.i("liuji","MainActivity --> findDone--> className:" + obj.getClassName() + " distance:" + obj.get("distance")
                         + " name:" + obj.get("name") + " id:" + obj.getObjectId());

@@ -158,7 +158,7 @@ public class IQuery {
      */
     public void whereNear(String latName, String lngName, IPoint point){
         String key = "(abs(" +latName+ " - " +point.getLat()+ ") + abs(" +lngName+ " - " +point.getLng()+ ")) as distance";
-        keys.add(0, key);
+        keys.add(0, key.toString());
         orderByASC("distance");
     }
 
@@ -228,10 +228,12 @@ public class IQuery {
             xnet.addPostTask(Urls.url, ff.getParams(), action, new com.autonavi.okhttp.callback.FindCallBack() {
                 @Override
                 public void done(String tag, String result, Exception e) {
+                    Log.i("liuji","IQuery --> done--> result:" + result);
                     if(e == null){
                         try {
                             List<IObject> list = new ArrayList<IObject>();
                             JSONArray arr = new JSONArray(result);
+                            Log.i("liuji","IQuery --> done--> arr:" + arr.length());
                             for(int i = 0, n = arr.length(); i < n; i++){
                                 IObject obj = IObject.convertJsonToIObject(arr.getJSONObject(i));
                                 if(obj != null){
@@ -241,7 +243,7 @@ public class IQuery {
                             findCallBack.findDone(tag, list, null);
                         }catch (Exception e1){
                             e1.printStackTrace();
-                            findCallBack.findDone(tag, null, new Exception(result));
+                            findCallBack.findDone(tag, null, e1);
                         }
                     }else{
                         findCallBack.findDone(tag, null, e);

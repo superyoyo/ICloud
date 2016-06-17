@@ -243,15 +243,21 @@ public class IObject{
      */
     public static IObject convertJsonToIObject(JSONObject iobj) throws Exception{
         IObject obj = null;
-        if(iobj.has("className") && iobj.has("objectId")){
-            obj = new IObject(iobj.getString("objectId"), "", iobj.getString("className"));
-            JSONObject iparams = iobj.getJSONObject("params");
-            Iterator<String> it = iparams.keys();
+        if(iobj.has("className") && iobj.has("id")){
+            obj = new IObject(iobj.get("id").toString(), "", iobj.getString("className"));
+            Iterator<String> it = iobj.keys();
             while (it.hasNext()){
                 String key = it.next();
-                Object value = iparams.get(key);
+                if(key.equals("id") || key.equals("className")){
+                    continue;
+                }
+                Object value = iobj.get(key);
                 if(key.equals("distance")){
-                    value = Math.sqrt((double)value);
+                    try{
+                        value = Math.sqrt((double)value);
+                    }catch (Exception e){
+                        //e.printStackTrace();
+                    }
                 }
 
                 obj.put(key, value);
