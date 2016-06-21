@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends Activity {
-    private String objectId = "2";
+    private String objectId = "3";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class MainActivity extends Activity {
 
     public void update(View view){
         IObject iObject = new IObject("1", "update", "user");
-        iObject.put("name", "JackHaHa");
+        iObject.put("name", "WangPeng");
         iObject.put("age", 26);
         iObject.updateInBackGround(updateCallBack);
     }
@@ -72,12 +72,12 @@ public class MainActivity extends Activity {
 
     private SaveCallBack saveCallBack = new SaveCallBack(this) {
         @Override
-        public void saveDone(String tag, Exception exception) {
+        public void saveDone(String tag, Exception exception, IObject iObject) {
             if(tag.equals("registe")){
                 if(exception != null){
                     exception.printStackTrace();
                 }else{
-                    Log.i("liuji", "MainActivity --> saveDone--> registe success!!!");
+                    Log.i("liuji", "MainActivity --> saveDone--> registe success!!! id:" + iObject.getObjectId());
                 }
             }
         }

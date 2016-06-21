@@ -108,9 +108,11 @@ public class IObject{
      */
     public void saveInBackGround(final SaveCallBack saveCallBack){
         if(TextUtils.isEmpty(getClassName())){
-            saveCallBack.saveDone(action, new Exception("className不能为空"));
+            saveCallBack.saveDone(action, new Exception("className不能为空"), null);
         }else if(TextUtils.isEmpty(action)){
             //TODO action为空不知道怎么提示
+        }else if(params == null && params.size() == 0){
+            saveCallBack.saveDone(action, new Exception("params不能为空"), null);
         }else{
             SaveFormat sf = new SaveFormat(params, className);
             XNetOKHttp xnet = XNetOKHttp.getInstance(saveCallBack.getActivity());
@@ -118,16 +120,46 @@ public class IObject{
                 @Override
                 public void done(String tag, String result, Exception e) {
                     if(e == null){
-                        if(TextUtils.isEmpty(result)){
-                            saveCallBack.saveDone(tag, null);
-                        }else{
-                            saveCallBack.saveDone(tag, new Exception(result));
+                        try {
+                            Integer.parseInt(result);
+                            objectId = result;
+                            saveCallBack.saveDone(tag, null, IObject.this);
+                        }catch (Exception e1){
+                            e1.printStackTrace();
+                            saveCallBack.saveDone(tag, new Exception(result), null);
                         }
                     }else{
-                        saveCallBack.saveDone(tag, e);
+                        saveCallBack.saveDone(tag, e, null);
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * 同步保存
+     * @throws Exception
+     */
+    public void save() throws Exception{
+        if(TextUtils.isEmpty(getClassName())){
+            throw new Exception("className不能为空");
+        }else if(params == null && params.size() == 0){
+            throw new Exception("params不能为空");
+        }else{
+            SaveFormat sf = new SaveFormat(params, className);
+            XNetOKHttp xnet = XNetOKHttp.getInstance();
+            XNetOKHttp.ResponseBean rb = xnet.addPostTask(Urls.url, sf.getParams());
+            if(rb.getCode() == 0){
+                try {
+                    Integer.parseInt(rb.getResult());
+                    objectId = rb.getResult();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    throw new Exception(rb.getResult());
+                }
+            }else{
+                throw rb.getException();
+            }
         }
     }
 
@@ -165,6 +197,31 @@ public class IObject{
     }
 
     /**
+     * 同步删除
+     * @throws Exception
+     */
+    public void delete() throws Exception{
+        if(TextUtils.isEmpty(getClassName())){
+            throw new Exception("className不能为空");
+        }else if(TextUtils.isEmpty(objectId)){
+            throw new Exception("objectId不能为空");
+        }else {
+            DeleteFormat df = new DeleteFormat(objectId, className);
+            XNetOKHttp xnet = XNetOKHttp.getInstance();
+            XNetOKHttp.ResponseBean rb = xnet.addPostTask(Urls.url, df.getParams());
+            if(rb.getCode() == 0){
+                try{
+                    int count = Integer.parseInt(rb.getResult());
+                    Log.i("liuji", "IObject --> done--> 删除受影响的条数是：" + count);
+                }catch (Exception e1){
+                    throw new Exception(rb.getResult());
+                }
+            }else{
+                throw rb.getException();
+            }
+        }
+    }
+    /**
      * 更新一个对象的某些属性
      * @param updateCallBack
      */
@@ -197,6 +254,33 @@ public class IObject{
         }
     }
 
+    /**
+     * 同步进行更新
+     * @throws Exception
+     */
+    public void update() throws Exception{
+        if(TextUtils.isEmpty(getClassName())){
+            throw new Exception("className不能为空");
+        }else if(TextUtils.isEmpty(objectId)){
+            throw new Exception("objectId不能为空");
+        }else if(params == null || params.size() == 0){
+            throw new Exception("params 不能为空");
+        }else {
+            UpdeteFormat uf = new UpdeteFormat(objectId, className, params);
+            XNetOKHttp xnet = XNetOKHttp.getInstance();
+            XNetOKHttp.ResponseBean rb = xnet.addPostTask(Urls.url, uf.getParams());
+            if(rb.getCode() == 0){
+                try{
+                    int count = Integer.parseInt(rb.getResult());
+                    Log.i("liuji", "IObject --> done--> 更新受影响的条数是:" + count);
+                }catch (Exception e1){
+                    throw new Exception(rb.getResult());
+                }
+            }else{
+                throw rb.getException();
+            }
+        }
+    }
     /**
      * 根据objectId获取该对象
      * @param getCallBack
@@ -232,6 +316,39 @@ public class IObject{
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * 同步获取
+     * @return
+     * @throws Exception
+     */
+    public IObject get() throws Exception{
+        if(TextUtils.isEmpty(getClassName())){
+            throw new Exception("className不能为空");
+        }else if(TextUtils.isEmpty(objectId)){
+            throw new Exception("objectId不能为空");
+        }else {
+            GetFormat gf = null;
+            if(keys == null){
+                gf = new GetFormat(objectId, className);
+            }else{
+                gf = new GetFormat(objectId, className, keys);
+            }
+            XNetOKHttp xnet = XNetOKHttp.getInstance();
+            XNetOKHttp.ResponseBean rb = xnet.addPostTask(Urls.url, gf.getParams());
+            if(rb.getCode() == 0){
+                IObject obj = null;
+                try {
+                    obj = convertJsonToIObject(rb.getResult());
+                    return obj;
+                }catch (Exception e1){
+                    throw e1;
+                }
+            }else{
+                throw rb.getException();
+            }
         }
     }
 

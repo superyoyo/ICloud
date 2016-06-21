@@ -252,4 +252,46 @@ public class IQuery {
             });
         }
     }
+
+    /**
+     * 同步查询
+     * @return IObject集合
+     * @throws Exception
+     */
+    public List<IObject> find() throws Exception{
+        if(TextUtils.isEmpty(className)){
+            throw new Exception("className不能为空");
+        }else if(filter == null || filter.size() == 0){
+            throw new Exception("filter 不能为空");
+        }else{
+            FindFormat ff = null;
+            if(keys == null){
+                ff = new FindFormat(className, filter, limit, orderBy);
+            }else{
+                ff = new FindFormat(className, filter, keys, limit, orderBy);
+            }
+            XNetOKHttp xnet = XNetOKHttp.getInstance();
+            XNetOKHttp.ResponseBean rb = xnet.addPostTask(Urls.url, ff.getParams());
+            Log.i("liuji","IQuery --> done--> result:" + rb.getResult());
+            if(rb.getCode() == 0){
+                try {
+                    List<IObject> list = new ArrayList<IObject>();
+                    JSONArray arr = new JSONArray(rb.getResult());
+                    Log.i("liuji","IQuery --> done--> arr:" + arr.length());
+                    for(int i = 0, n = arr.length(); i < n; i++){
+                        IObject obj = IObject.convertJsonToIObject(arr.getJSONObject(i));
+                        if(obj != null){
+                            list.add(obj);
+                        }
+                    }
+                    return list;
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                    throw e1;
+                }
+            }else{
+                throw rb.getException();
+            }
+        }
+    }
 }
