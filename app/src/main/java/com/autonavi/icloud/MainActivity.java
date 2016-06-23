@@ -2,18 +2,22 @@ package com.autonavi.icloud;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
+import com.autonavi.icloud.bean.IFile;
 import com.autonavi.icloud.bean.IObject;
 import com.autonavi.icloud.bean.IPoint;
 import com.autonavi.icloud.bean.IQuery;
 import com.autonavi.icloud.callback.DeleteCallBack;
 import com.autonavi.icloud.callback.FindCallBack;
 import com.autonavi.icloud.callback.GetCallBack;
+import com.autonavi.icloud.callback.ProgressCallBack;
 import com.autonavi.icloud.callback.SaveCallBack;
 import com.autonavi.icloud.callback.UpdateCallBack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +50,34 @@ public class MainActivity extends Activity {
     }
 
     public void get(View view){
-        IObject iObject = new IObject("1", "get", "user");
+        /*IObject iObject = new IObject("1", "get", "user");
         List<String> keys = new ArrayList<>();
         keys.add("name");
         keys.add("age");
         iObject.setKeys(keys);
-        iObject.getInBackGround(getCallBack);
+        iObject.getInBackGround(getCallBack);*/
+        String path = getSDPath() + "/setting.cfg";
+        File f = new File(path);
+        Log.i("liuji","MainActivity --> get--> f is exist:" + f.exists());
+        f.mkdirs();
+        IFile file = IFile.withAbsoluteLocalPath("upload", "fs365goodimage", "test.txt", path);
+        file.saveInBackground(saveCallBack, new ProgressCallBack(this) {
+            @Override
+            public void saveDone(Integer integer) {
+                Log.i("liuji","MainActivity --> saveDone--> " + integer);
+            }
+        });
+    }
+    public String getSDPath(){
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState()
+                .equals(Environment.MEDIA_MOUNTED);   //判断sd卡是否存在
+        if   (sdCardExist)
+        {
+            sdDir = Environment.getExternalStorageDirectory();//获取跟目录
+        }
+        return sdDir.toString();
+
     }
 
     public void find(View view){
