@@ -13,9 +13,9 @@ import com.autonavi.icloud.bean.IQuery;
 import com.autonavi.icloud.callback.DeleteCallBack;
 import com.autonavi.icloud.callback.FindCallBack;
 import com.autonavi.icloud.callback.GetCallBack;
-import com.autonavi.icloud.callback.ProgressCallBack;
 import com.autonavi.icloud.callback.SaveCallBack;
 import com.autonavi.icloud.callback.UpdateCallBack;
+import com.autonavi.okhttp.listener.impl.UIProgressListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,11 +60,16 @@ public class MainActivity extends Activity {
         File f = new File(path);
         Log.i("liuji","MainActivity --> get--> f is exist:" + f.exists());
         f.mkdirs();
-        IFile file = IFile.withAbsoluteLocalPath("upload", "fs365goodimage", "test.txt", path);
-        file.saveInBackground(saveCallBack, new ProgressCallBack(this) {
+        IFile file = IFile.withAbsoluteLocalPath("fs365goodimage", "test.txt", path);
+        file.saveInBackground(new com.autonavi.okhttp.callback.SaveCallBack() {
             @Override
-            public void saveDone(Integer integer) {
-                Log.i("liuji","MainActivity --> saveDone--> " + integer);
+            public void done(Exception e) {
+
+            }
+        }, new UIProgressListener() {
+            @Override
+            public void onUIProgress(long currentBytes, long contentLength, boolean done) {
+                Log.d("liuji", (currentBytes / contentLength) + "");
             }
         });
     }
