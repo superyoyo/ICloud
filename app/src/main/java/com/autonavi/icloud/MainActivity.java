@@ -31,22 +31,22 @@ public class MainActivity extends Activity {
     }
 
     public void save(View view){
-        IObject iObject = new IObject("user", "registe");
-        iObject.put("name", "JackLee");
-        iObject.put("age", 23);
-        iObject.saveInBackGround(saveCallBack);
+        new IObject("user", "registe")
+                .put("name", "JackLee")
+                .put("age", 23)
+                .saveInBackGround(saveCallBack);
     }
 
     public void delete(View view){
-        IObject iObject = new IObject(objectId, "delete", "user");
-        iObject.deleteInBackGround(deleteCallBack);
+        new IObject(objectId, "delete", "user")
+                .deleteInBackGround(deleteCallBack);
     }
 
     public void update(View view){
-        IObject iObject = new IObject("1", "update", "user");
-        iObject.put("name", "WangPeng");
-        iObject.put("age", 26);
-        iObject.updateInBackGround(updateCallBack);
+        new IObject("1", "update", "user")
+                .put("name", "WangPeng")
+                .put("age", 26)
+                .updateInBackGround(updateCallBack);
     }
 
     public void get(View view){

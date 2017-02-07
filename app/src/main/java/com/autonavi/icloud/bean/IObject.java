@@ -74,16 +74,18 @@ public class IObject{
      * 为该对象设置数据库Id，方便查询
      * @param objectId
      */
-    public void setObjectId(String objectId){
+    public IObject setObjectId(String objectId){
         this.objectId = objectId;
+        return this;
     }
     /**
      * 为该对象添加属性
      * @param key 该对象的属性
      * @param value 该对象对应属性的属性值
      */
-    public void put(String key, Object value){
+    public IObject put(String key, Object value){
         params.put(key, value);
+        return this;
     }
 
     /**

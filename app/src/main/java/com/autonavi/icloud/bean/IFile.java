@@ -36,7 +36,7 @@ public class IFile {
             .writeTimeout(1000, TimeUnit.MINUTES)
             .build();
 
-    public IFile(String name, String path, String bucketName) {
+    private IFile(String name, String path, String bucketName) {
         this.name = name;
         this.path = path;
         this.bucketName = bucketName;
